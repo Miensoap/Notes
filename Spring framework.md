@@ -13,37 +13,6 @@
 - 관점 지향 프로그래밍
 - 중복되는 코드 / 공통기능을 한 곳에 보관. 재사용성 극대화.
 
----
-
-
-### MVC (Model View Controller) (Model2)
-- 사용자 인터페이스와 비즈니스 로직을 분리하여 개발
-
-```mermaid
-flowchart LR
-    A[CLIENT] -->|request| B(SERVLET);
-    B --> |call| C(MODEL);
-    C -->|SQL| D[(DATABASE)];
-    D-->|result|C;
-    C-->|result|B;
-    B-->|response|A;
-    B-->|forward|E(VIEW);
-    E-->|result view|B;
-```
-
-#### Model
-- Service / DAO / Java Beans
-- Logic 처리를 담당. Controller로 부터 넘어온 data 이용, return
-- Model에서는 View와 Controller의 정보를 가지고 있으면 X
-#### View
-- JSP
-- 화면처리를 담당. Client 요청에 대한 결과 / controller에 요청을 보내는 화면단
-- Model이 가진 정보를 저장 X Model , Controller 의 구성요소 X
-#### Controller
-- Servlet
-- Client 요청을 분석하여 Model 호출
-- 필요에 따라 request, session 등에 결과data 저장, redirect / forward 방식으로 jsp page 이용 출력
-- Model , View 의 정보 O
 
 ---
 
@@ -102,8 +71,50 @@ public class Hello{
 ### Maven
 
 #### pom.xml
+- Project Object Model 정보를 담고 있는 파일
+- 프로젝트 정보 / 빌드 설정 정보 / POM 연관 정보
 
----
+```java
+	<name> // 프로젝트 명
+	<url> // 프로젝트 사이트 URL
+	<description> // 프로젝트에 대한 설명
+	<organization> // 프로젝트를 관리하는 단체 설명
+
+	<groupId> // 프로젝트의 그룹 ID설정
+	<artifactId> // 프로젝트 아티펙트 ID
+	<version> // 프로젝트의 버전
+
+	<packaging> // 패키징 타입
+		// jar, war
+	<dependencies> // 라이브러리 의존성 정보 dependency 태그를 묶음
+	<dependency> // 각 라이브러리의 정보
+	<groupId> // 의존성 라이브러리의 그룹 id
+	<artifactId>
+	<version>
+	
+	<scope> // 해당 라이브러리의 이용 범위 지정
+		// complie(default) : 모든 클래스 경로에서 사용가능. 컴파일 및 배포상황에서 제공
+		// provided : 런타임 시에만 제공. 컴파일 또는 테스트 경로에서만 사용. 배포시에 빠짐
+		// runtime : 실행 상황에서만 사용. 컴파일 클래스 경로에x
+		// test : 테스트에서만 사용. 종속 프로젝트에 영향 x
+		// system : 저장소에서x 직접 관리하는 JAR를 추가. systemPath를 추가 필요
+	
+	<optional> // 다른 프로젝트에서 이 프로젝트를 의존성 설정을 할 경우 사용할지 결정
+
+```
+##### Spring Boot Starter Parent
+- 프로젝트에서 사용하는 다양한 라이브러리 간의 버전 충돌 문제 방지
+- 의존성 조합간 충돌 문제가 없는 검증된 버전 조합 제공
+
+##### Spring Boot Starter Web
+- Spring MVC를 사용한 REST 서비스 개발에 사용
+
+##### Spring Boot Starter Test
+- JUnit, Hamcrest, Mockito 를 포함한 스프링 어플리케이션의 테스트 기능 제공
+
+
+
+----
 
 ### 디자인 패턴
 - 특정 문맥에서 공통적으로 발생하는 문제에 대해 쓰이는 재사용 가능한 해결책
@@ -211,4 +222,61 @@ Visitor|객체의 원소에 대해 수행할 연산을 분리하여 별도의 �
 7. 파일 확장자를 표현하지 않음
 ---
 
+### MVC (Model View Controller)
+- 어플리케이션을 구성할 때 그 구성요소를 세가지 역할로 구분한 패턴
+- 사용자 인터페이스로부터 비즈니스 로직을 분리하여 서로 영향 없이 수정 가능
+
+```mermaid
+flowchart LR
+    A[CLIENT] -->|request| B(SERVLET);
+    B --> |call| C(MODEL);
+    C -->|SQL| D[(DATABASE)];
+    D-->|result|C;
+    C-->|result|B;
+    B-->|response|A;
+    B-->|forward|E(VIEW);
+    E-->|result view|B;
+```
+
+#### Controller
+- Servlet
+- Client 요청을 분석하여 Model 호출
+- 필요에 따라 request, session 등에 결과data 저장, redirect / forward 방식으로 jsp page 이용 출력
+- Model , View 의 정보 O
+- ex) 쇼핑몰에서 상품을 검색하면 그 키워드를 컨트롤러가 받아 모델과 뷰에 적절히 입력을 전달
+
+#### Model
+- Service / DAO / Java Beans
+- Logic 처리를 담당. Controller로 부터 넘어온 data 이용, return
+- Model에서는 View와 Controller의 정보를 가지고 있으면 X
+- ex) 검색을 위한 키워드가 넘어오면 DB에서 관련 상품의 데이터를 받아 View 에 전달
+
+#### View
+- JSP
+- 화면처리를 담당. Client 요청에 대한 결과 / controller에 요청을 보내는 화면단
+- Model이 가진 정보를 저장 X Model , Controller 의 구성요소 X
+- ex) 검색 결과를 보여주기 위해 모델에서 결과 상품 리스트 데이터를 받음
+
+---
+
+##### @RestController
+- @Controller에 @ResponseBody가 결합된 어노테이션
+- 컨트롤러 하위 메서드에 @ResponseBody 어노테이션을 붙이지 않고도 문자열과 JSON 전송가능
+- View 를 거치지 않고 HTTP ResponseBody에 직접 Return 값을 담아 보냄
+
+##### @RequestMapping
+- MVC의 Handler Mapping 을 위해서 DefaultAnnotationHandlerMapping 을 사용
+- DefaultAnnotationHandlerMapping 매핑정보로 @RequestMapping 활용
+- 클래스와 메서드의 RequestMapping 을 통해 URL을 매핑하여 경로설정. 해당메서드에서 처리
+
+- value : url 설정
+- method : GET, POST, DELETE, PUT, PATCH등
+
+- Spring 4.3버전부터는 메서드를 지정하는 방식보다 어노테이션 사용
+	- @GetMapping
+	- @PostMapping 
+	- @DeleteMapping 
+	- @PutMapping
+	- @PatchMapping
+- 별도의 parameter 없이 API 호출
 
