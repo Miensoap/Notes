@@ -259,12 +259,16 @@ flowchart LR
 
 ---
 
-##### @RestController
+#### @RestController
 - @Controller에 @ResponseBody가 결합된 어노테이션
 - 컨트롤러 하위 메서드에 @ResponseBody 어노테이션을 붙이지 않고도 문자열과 JSON 전송가능
 - View 를 거치지 않고 HTTP ResponseBody에 직접 Return 값을 담아 보냄
 
-##### @RequestMapping
+---
+
+### Get api
+
+#### @RequestMapping
 - MVC의 Handler Mapping 을 위해서 DefaultAnnotationHandlerMapping 을 사용
 - DefaultAnnotationHandlerMapping 매핑정보로 @RequestMapping 활용
 - 클래스와 메서드의 RequestMapping 을 통해 URL을 매핑하여 경로설정. 해당메서드에서 처리
@@ -280,3 +284,55 @@ flowchart LR
 	- @PatchMapping
 - 별도의 parameter 없이 API 호출
 
+#### @PathVariable
+- Get형식의 요청에서 파라미터를 전달하기 위해 URL에 값을 담아 요청하는 바업
+```java
+	@GetMapping(value="/{variable}")
+	public String getVariable1(@PathVariable String variable){
+		return variable;
+	}
+	//  @GetMapping의 {변수}이름과 메서드의 파라미터가 일치해야함
+```
+```java
+	@GetMapping(value="/variable2{variable}")
+	public String getVariable2(@PathVAriable("variable")String var){
+		return var;
+	}
+	// 변수명이 다를경우
+```
+
+#### @RequestParam
+- Get형식의 요청에서 쿼리 문자열을 전달하기 위해 사용되는 방법
+- '?' 를 기준으로 우측에 {key}={value} 형태로 전달, 복수 형태로 전달할 경우 & 사용
+- request1?name=flature&email=thinkground ....
+```java
+	@GetMapping(value="/request1")
+	public String getRequestParam1(
+	@RequestParam String name,
+	@RequestParam String email,
+	...){
+	return name+""+email+...;
+	}
+
+	StringBuilder sb = new StringBuilder();
+	param.entrySet().forEach(map->{
+		sb.append(map.getKey()+":"+map.getValue()+"\n");
+	})
+	return sb.toString();
+	// 어떤 요청값이 들어올지 모를 경우
+```
+
+##### DTO 사용
+- key와 value가 정해져있지만, 받아야할 파라미터가 많을 경우
+```java
+	@GetMapping(value="/request3")
+	public String getRequestParam3(MemberDTO memberDTO){
+	return memberDTO.toString();
+	}
+
+	public class MemberDTO{
+		private String name;
+		private String email;
+		private String organization;
+	}
+```
