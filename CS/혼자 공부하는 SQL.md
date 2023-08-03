@@ -157,5 +157,79 @@ TRUNCATE TABLE big_table; -- 빈 테이블을 남김. 빠름. 조건문 사용 �
 
 ```
 ---
-
 ## 데이터 형식
+
+### 정수형
+- TINYINT 
+- SMALLINT
+- INT
+- BIGINT
+
+### 문자형
+- CHAR : 고정길이 문자형
+- VARCHAR : 가변길이 문자형
+
+- TEXT
+- LONGTEXT
+- BLOB : Binary Long Object. 사진이나 동영상 등 저장
+- LONGBLOB
+```MySQL
+CREATE DATABASE netflix_db;
+
+USE netflix_db;
+
+CREATE Table movie
+
+(movie_id INT,
+
+movie_title VARCHAR(30),
+
+movie_director VARCHAR(20),
+
+movie_script LONGTEXT,
+
+movie_flim LONGBLOB
+);
+```
+
+### 실수형
+- FLOAT
+- DOUBLE
+
+### 날짜형
+- DATE : YYYY-MM-DD
+- TIME : HH:MM:SS
+- DATETIME 
+
+### 변수의 사용
+```MySQL
+SET @변수이름 = 값 ; -- 변수의 선언 및 값 대입
+SELECT @변수이름 ; -- 값 출력
+```
+- SELECT , WHERE문에 사용가능, LIMIT문에 사용불가
+- PREPARE : 실행하지 않고 준비
+- EXECUTE : 실행
+```MySQL
+SET @count =3;
+PREPARE mySQL FROM 'SELECT mem_name, height FROM member ORDER BY height LIMIT ?';
+EXECUTE mySQL USING @count
+```
+- '?' 가 USING 뒤의 변수로 채워져서 실행됨
+
+### 형변환
+```MySQL
+SELECT CAST(AVG(price) AS SIGNED) '평균 가격' FROM buy;
+SELECT CONVERT(AVG(price) AS SIGNED) '평균 가격' FROM buy;
+-- CAST(값 AS 형식 [길이] )
+
+SELECT CAST('2022/12/12' AS DATE);
+-- 구분자를 날찌형으로 변환 가능
+
+SELECT CONCAT(CAST(price AS CHAR), 'X' , CAST(amount AS CHAR), '=')
+-- '30X2='
+-- CONCAT은 문자를 이어줌
+```
+- 숫자와 문자의 연산은 CONCAT과 연산자로 자동 임시 형변환
+
+---
+## JOIN
