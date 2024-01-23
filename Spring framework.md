@@ -1,21 +1,17 @@
 ### IOC (Inversion of Control)
 - 사용자가 제어의 흐름을 선택하지 않고 특별한 객체에 위임
-
 ### DL (Dependency Lookup)
 - 컨테이너에서 제공하는 API를 이용하여 사용하고자 하는 빈을 검색
 ### DI (Dependency Injection)
 - 각 클래스 사이의 필요로 하는 의존관계를 빈 설정 정보를 바탕으로 컨테이너가 자동 연결
-
-#### POJO (Plain Olld Java Object)
+#### POJO (Plain Old Java Object)
 - getter / setter를 가진 단순 자바 오브젝트
 - 의존성이 없어 유연.
 #### AOP (Aspect Oriented Programming)
 - 관점 지향 프로그래밍
 - 중복되는 코드 / 공통기능을 한 곳에 보관. 재사용성 극대화.
 
-
 ---
-
 #### Spring Core
 - Spring Container. 
 - Bean Factory Container는 IOC패턴을 적용하여 객체 구성/ 의존성 처리 등 
@@ -43,9 +39,6 @@
 - JSP, Velocity, Tiles , iText, POI 등 View 기술 지원
 
 ----
-
-
-
 ### 원격 프로그램 실행
 1. 프로그램 등록
 2. URL과 프로그램을 연결
@@ -67,7 +60,6 @@ public class Hello{
 ```
 
 ---
-
 ### Maven
 
 #### pom.xml
@@ -258,7 +250,6 @@ flowchart LR
 - ex) 검색 결과를 보여주기 위해 모델에서 결과 상품 리스트 데이터를 받음
 
 ---
-
 #### @RestController
 - @Controller에 @ResponseBody가 결합된 어노테이션
 - 컨트롤러 하위 메서드에 @ResponseBody 어노테이션을 붙이지 않고도 문자열과 JSON 전송가능
@@ -266,7 +257,7 @@ flowchart LR
 
 ---
 
-### Get api
+### Get API
 
 #### @RequestMapping
 - MVC의 Handler Mapping 을 위해서 DefaultAnnotationHandlerMapping 을 사용
@@ -335,4 +326,121 @@ flowchart LR
 		private String email;
 		private String organization;
 	}
+```
+---
+
+### Post API
+- 리소스를 추가하기 위해 사용되는 API
+
+#### @PostMapping
+- @RequestMapping + POST method
+- 추가하고자 하는 리소스를 http body에 추가하여 서버에 요청
+- @RequestBody 이용하여 값을 받는다
+
+---
+## Lombok
+- 반복되는 메소드를 어노테이션을 사용하여 자동으로 작성해주는 라이브러리
+- 대표 Annotation
+	- @Getter
+	- @Setter
+	- @NoArgConstructor
+	- @AllArgConstructor
+	- @Data
+	- @ToString
+
+#### @EqualsAndHashCode
+- equals , hashcode 메소드 자동 생성
+- equals : 두 객체의 내용이 같은지 equality 비교
+- hashcode : 두 객체가 같은 객체인지 identity 비교
+- callSuper 속성을 통해 부모 클래스의 필드까지 고려할지 여부 설정
+
+#### @Data
+- 앞의 기등들을 모두 추가
+
+---
+### Entity(Domain)
+- 데이터베이스에 쓰일 column과 여러 엔티티 간의 연관관계를 정의
+- 데이터베이스의 테이블을 하나의 엔티니로 생각해도 무방
+- 실제 데이터베이스의 테이블과 1:1로 매핑
+- 이 클래스의 필드는 각 테이블 내부의 Column을 의미
+
+### Repository
+- 엔티티에 의해 생성된 데이터베이스에 접근하는 메소드를 사용하기 위한 인터페이스
+- Service와  DB를 연결
+- CRUD를 정의하는 영역
+
+### DAO (Data Access Object)
+- 데이터베이스에 접근하는 객체 (Persistance Layer)
+- Service가 DB에 연결할 수 있게 해주는 역할
+- DB를 사용해 데이터를 조회하거나 조작하는 기능
+
+### DTO (Data Transfer Object)
+- Value Object , 계층간 데이터 교환을 위한 객체 의미
+- VO의 경우 Read Only의 개념
+
+---
+## Logback
+- Log4j 기반 로깅 라이브러리
+- 로그 레벨 설정 가능 (Trace - Debug - Info - Warn - Error)
+- 출력 방식 설정 가능
+- 설정 파일을 주기적 스캔하여 어플리케이션 중단 없이 설정 변경 가능
+- 별도의 프로그램 없이 자체적으로 로그 압축 지원
+- 로그 보관 기간 설정 가능
+
+#### 설정
+- Classpath에 있는 logback 설정 파일 참조
+- Java Legacy, Spring의 경우에는 logback.xml
+- Spring Boot 의 경우 logback-spring.xml
+
+##### appender
+- Log의 형태 및 어디에 출력할지 설정
+- ConsoleAppender : 콘솔에 출력
+- FileAppender : 파일에 저장
+- RollingFileAppender : 여러개의 파일 순회하며 저장
+- SMTPAppender : 메일로 전송
+- DBAppender : DB에 저장
+
+##### encoder
+- pattern 을 사용하여 원하는 형식으로 로그 표현
+```java
+<encoder>
+	<pattern>
+	[%d{yyyy=MM-dd HH:mm:ss.SSS}][%-5level][%thread]%logger%msg%n
+	</pattern>
+```
+
+##### root
+- 설정한 Appender 참조하여 로그의 레벨 설정
+- 지역 설정의 경우 logger
+```java
+<root level="DEBUG">
+	<appender-ref ref="INFO_LOG"/>
+</root>
+```
+
+---
+## Validation
+- 유효성 검사. 데이터 검증
+- 들어오는 데이터에 대해 의도한 형식의 값인지 확인
+
+### Bean Validation / Hibernate Vaildator
+- 어노테이션을 통해 데이터를 검증할 수 있게 기능 제공
+```java
+@Size
+@NotNull
+@NotEnptu
+@NotBlank
+
+@Past
+@PastOrPresent
+@Future
+@FutureOrPresent
+
+@Pattern
+
+@Max
+@Min
+@AssertTrue / @AssertFalse
+
+@Valid
 ```
